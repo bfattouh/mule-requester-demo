@@ -14,7 +14,7 @@ ftp.username=YourFtpUser<br/>
 ftp.password=YpurFtpPassword<br/>
 ftp.path=/documents/ftp<br/>
 
-Check the blog posted <p><a href="http://www.appnovation.com/blog/mule-requester-module">here</a></p><br/>
+Check the blog posted <a href="http://www.appnovation.com/blog/mule-requester-module">here</a>
 for further details.
 
 
