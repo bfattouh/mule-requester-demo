@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ftp="http://www.mulesoft.org/schema/mule/ee/ftp"
+    xmlns:tracking="http://www.mulesoft.org/schema/mule/ee/tracking" 
+    xmlns="http://www.mulesoft.org/schema/mule/core" 
+    xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans"
+	xmlns:mulerequester="http://www.mulesoft.org/schema/mule/mulerequester" version="EE-3.5.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mulesoft.org/schema/mule/ee/ftp http://www.mulesoft.org/schema/mule/ee/ftp/current/mule-ftp-ee.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/ee/tracking http://www.mulesoft.org/schema/mule/ee/tracking/current/mule-tracking-ee.xsd
+http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/current/mule-mulerequester.xsd">
+        
+   	<flow name="ftp-flow-write" doc:name="ftp-flow-write">
+		<mulerequester:request resource="fileToftpEndpoint" config-ref="Mule_Requester" doc:name="Request File" />
+		<logger message="Mule requester message read: #[message]" level="INFO" doc:name="Logger" />
+		<logger message="Start writing to ftp server: ${ftp.host} , port: ${ftp.port} and location ${ftp.path}" level="INFO" doc:name="Logger" />
+		<ftp:outbound-endpoint host="${ftp.host}" 
+				port="${ftp.port}" 
+				user="${ftp.username}"
+				password="${ftp.password}" 
+				path="${ftp.path}"
+				outputPattern="${local.file.prefix}-#[server.dateTime].${local.file.suffix}" doc:name="FTP" connector-ref="FTPConnecor"/>
+		<logger message="End writing to ftp server" level="INFO" doc:name="Logger" />
+	</flow>
+	
+	<flow name="ftp-flow-read" doc:name="ftp-flow-read" initialState="stopped">
+		<ftp:inbound-endpoint host="${ftp.host}" port="${ftp.port}" user="${ftp.username}" password="${ftp.password}" path="${ftp.path}" doc:name="FTP" connector-ref="FTPConnecor"/>
+        <byte-array-to-string-transformer doc:name="Byte Array to String"/>
+		<logger message="End reading from ftp server, payload: #[payload]" level="INFO" doc:name="Logger" />
+	</flow>
+
+</mule>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:ftp="http://www.mulesoft.org/schema/mule/ee/ftp" xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:file="http://www.mulesoft.org/schema/mule/file"
+	xmlns:mulerequester="http://www.mulesoft.org/schema/mule/mulerequester" xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation"
+	xmlns:spring="http://www.springframework.org/schema/beans" version="EE-3.5.1"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-current.xsd
+http://www.mulesoft.org/schema/mule/file http://www.mulesoft.org/schema/mule/file/current/mule-file.xsd
+http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-current.xsd
+http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/mulerequester http://www.mulesoft.org/schema/mule/mulerequester/current/mule-mulerequester.xsd
+http://www.mulesoft.org/schema/mule/ee/ftp http://www.mulesoft.org/schema/mule/ee/ftp/current/mule-ftp-ee.xsd">
+    
+    <context:property-placeholder location="classpath:api.properties" />
+    
+    <mulerequester:config name="Mule_Requester" doc:name="Mule Requester"/>
+    
+    <file:endpoint path="${local.file.folder}"
+			connector-ref="fileConnector" responseTimeout="10000"
+			doc:name="File To Sftp Endpoint" pollingFrequency="70000" name="fileToftpEndpoint">
+			<file:filename-regex-filter pattern="${local.file.prefix}-([0-9]{8}).${local.file.suffix}" caseSensitive="true" />
+	</file:endpoint>
+	
+	<file:connector name="fileConnector" streaming="true" 
+					validateConnections="true" doc:name="fileConnector" 
+					autoDelete="false" />
+    
+    <ftp:connector name="FTPConnecor" pollingFrequency="1000" validateConnections="true" doc:name="FTP"/>
+
+</mule>
